@@ -16,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     addWorkItem.h \
+    dataBase.h \
     mainwindow.h \
     workItem.h
 

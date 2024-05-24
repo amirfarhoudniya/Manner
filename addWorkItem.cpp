@@ -16,3 +16,12 @@ addWorkItem::~addWorkItem()
 {
     delete ui;
 }
+
+void addWorkItem::on_add_pushButton_clicked()
+{
+    // QSqlQuery query ;
+    // query.prepare("") ;
+    // query.addBindValue();
+    // query.exec();
+}
+
