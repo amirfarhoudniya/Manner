@@ -17,51 +17,40 @@ MainWindow::MainWindow(QWidget *parent)
     refreshListWidget();
 }
 
-
-void MainWindow::addTaskFunc()
-{
-    QListWidgetItem *item = new QListWidgetItem() ;
-    item->setSizeHint(QSize(0 , 40));
-
-    addTaskItem *task = new addTaskItem() ;
-    connect(task , &addTaskItem::taskAdded , this , &MainWindow::refreshListWidget) ;
-
-    ui->listWidget->addItem(item);
-    ui->listWidget->setItemWidget(item , task);
-}
-
 void MainWindow::notifier(QString _message)
 {
-    // 1000 ms to make the notification opacity full and 1000 seconds to call the fade out so total of 2000ms.
+    // 1000 ms to make the notification opacity full and 1000 seconds to call the fade out, so a total of 2000ms.
     label = new QLabel(this);
     timer = new QTimer(this);
-    QGraphicsOpacityEffect* effect=new QGraphicsOpacityEffect();
+    QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
     label->setGraphicsEffect(effect);
-    label->setStyleSheet("border-radius:10px;background-color:green;color:brack;font:Times New Roman");
+    label->setStyleSheet("border-radius:10px;background-color:green;color:black;font:Arial;");
     label->setAlignment(Qt::AlignCenter);
     label->setText(_message);
     ui->notifier_layout->addWidget(label);
-    QPropertyAnimation* a=new QPropertyAnimation(effect,"opacity");
-    a->setDuration(1000);  // in miliseconds
+    QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
+    a->setDuration(500);  // in milliseconds
     a->setStartValue(0);
     a->setEndValue(1);
     a->setEasingCurve(QEasingCurve::InBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
     label->show();
-    connect(timer,&QTimer::timeout,this,&MainWindow::fadeOut);
-    this->timer->start(2000);
+
+    connect(timer, &QTimer::timeout, this, &MainWindow::fadeOut);
+    this->timer->start(1000);
 }
 
 void MainWindow::fadeOut(){
     QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
     this->label->setGraphicsEffect(effect);
     QPropertyAnimation *a = new QPropertyAnimation(effect,"opacity");
-    a->setDuration(1000); // it will took 1000ms to face out
+    a->setDuration(500); // it will took 1000ms to face out
     a->setStartValue(1);
     a->setEndValue(0);
     a->setEasingCurve(QEasingCurve::OutBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
     connect(a,SIGNAL(finished()),this->label,SLOT(hide()));
+    disconnect(timer, &QTimer::timeout, this, &MainWindow::fadeOut);
 }
 
 void MainWindow::refreshListWidget()
@@ -96,6 +85,7 @@ void MainWindow::refreshListWidget()
 
     addTaskItem *task = new addTaskItem() ;
     connect(task , &addTaskItem::taskAdded , this , &MainWindow::refreshListWidget) ;
+    connect(task , &addTaskItem::callPopUpNotifier , this , &MainWindow::notifier) ;
 
     ui->listWidget->addItem(item);
     ui->listWidget->setItemWidget(item , task);
@@ -108,6 +98,7 @@ void MainWindow::removeTask(QString _taskText)
     query.bindValue(":taskText" , _taskText);
     query.exec() ;
     refreshListWidget();
+    notifier("saved");
 }
 
 MainWindow::~MainWindow()

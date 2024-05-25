@@ -25,6 +25,7 @@ public:
 
 signals :
     void taskAdded() ;
+    void callPopUpNotifier(QString _message) ;
 
 private slots:
     void on_add_pushButton_clicked();

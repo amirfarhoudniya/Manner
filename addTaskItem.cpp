@@ -31,6 +31,7 @@ void addTaskItem::on_add_pushButton_clicked()
     query.exec();
     taskText = task ;
     emit taskAdded();
+    emit callPopUpNotifier("saved");
     QTimer::singleShot(1, this, &addTaskItem::close);
 
 }
