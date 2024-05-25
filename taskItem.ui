@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>workItem</class>
- <widget class="QWidget" name="workItem">
+ <class>taskItem</class>
+ <widget class="QWidget" name="taskItem">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>522</width>
-    <height>49</height>
+    <height>54</height>
    </rect>
   </property>
   <property name="windowTitle">

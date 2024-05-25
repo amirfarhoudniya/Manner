@@ -9,21 +9,21 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    addWorkItem.cpp \
+    addTaskItem.cpp \
     main.cpp \
     mainwindow.cpp \
-    workItem.cpp
+    taskItem.cpp
 
 HEADERS += \
-    addWorkItem.h \
+    addTaskItem.h \
     dataBase.h \
     mainwindow.h \
-    workItem.h
+    taskItem.h
 
 FORMS += \
-    addWorkItem.ui \
+    addTaskItem.ui \
     mainwindow.ui \
-    workItem.ui
+    taskItem.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

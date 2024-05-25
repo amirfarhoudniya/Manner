@@ -5,9 +5,11 @@
 #include <QDate>
 #include <QLabel>
 #include <QTimer>
+#include <QSqlQuery>
 
-#include "addWorkItem.h"
-#include "workItem.h"
+#include "addTaskItem.h"
+#include "taskItem.h"
+#include "dataBase.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -22,9 +24,11 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void addWorkFunc() ;
     void notifier(QString _message) ;
     void fadeOut() ;
+    void addTaskSignalReceived() ;
+    void refreshListWidget() ;
+    void removeTask(QString _taskText);
 
     ~MainWindow();
 

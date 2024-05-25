@@ -10,29 +10,24 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //labels style
-    // ui->dayInWeek_label->setAlignment(Qt::AlignVCenter);
-    // ui->dayInMonth_label->setAlignment(Qt::AlignHCenter);
-    // ui->monthName_label->setAlignment(Qt::AlignLeft);
-
     //lable's text
-    ui->dayInWeek_label->setText(date.currentDate().toString("dddd"));// in text
-    ui->date_label->setText(date.currentDate().toString("dd  MMM  yyyy"));//in number and text
+    ui->dayInWeek_label->setText(QDate::currentDate().toString("dddd"));// in text
+    ui->date_label->setText(QDate::currentDate().toString("dd  MMM  yyyy"));//in number and text
 
-
-    addWorkFunc();
+    refreshListWidget();
 }
 
-void MainWindow::addWorkFunc()
+
+void MainWindow::addTaskFunc()
 {
     QListWidgetItem *item = new QListWidgetItem() ;
     item->setSizeHint(QSize(0 , 40));
 
-    addWorkItem *work = new addWorkItem() ;
-    // workItem *workItem1 = new workItem() ;
+    addTaskItem *task = new addTaskItem() ;
+    connect(task , &addTaskItem::taskAdded , this , &MainWindow::refreshListWidget) ;
 
     ui->listWidget->addItem(item);
-    ui->listWidget->setItemWidget(item , work);
+    ui->listWidget->setItemWidget(item , task);
 }
 
 void MainWindow::notifier(QString _message)
@@ -67,6 +62,52 @@ void MainWindow::fadeOut(){
     a->setEasingCurve(QEasingCurve::OutBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
     connect(a,SIGNAL(finished()),this->label,SLOT(hide()));
+}
+
+void MainWindow::refreshListWidget()
+{
+    ui->listWidget->clear();
+
+    //query all tasks of today
+    QSqlQuery query ;
+    query.prepare("SELECT * FROM tasks WHERE date = :currentDate") ;
+    query.bindValue(":currentDate" ,  QDate::currentDate().toString("ddMMMyyyy"));
+
+    if(query.exec()) {
+        while (query.next()) {
+            QSqlRecord record = query.record() ;
+            QString taskText = record.value("task").toString();
+
+            taskItem *_taskItem = new taskItem() ;
+            _taskItem->AddTask(taskText);
+            connect(_taskItem , &taskItem::removeTaskItem , this , &MainWindow::removeTask) ;
+
+            QListWidgetItem *item = new QListWidgetItem() ;
+            item->setSizeHint(QSize(0 , 40));
+
+            ui->listWidget->addItem(item);
+            ui->listWidget->setItemWidget(item , _taskItem);
+        }
+    }
+
+    //create new addText item in end of listWidget
+    QListWidgetItem *item = new QListWidgetItem() ;
+    item->setSizeHint(QSize(0 , 40));
+
+    addTaskItem *task = new addTaskItem() ;
+    connect(task , &addTaskItem::taskAdded , this , &MainWindow::refreshListWidget) ;
+
+    ui->listWidget->addItem(item);
+    ui->listWidget->setItemWidget(item , task);
+}
+
+void MainWindow::removeTask(QString _taskText)
+{
+    QSqlQuery query ;
+    query.prepare("DELETE FROM tasks WHERE task = :taskText") ;
+    query.bindValue(":taskText" , _taskText);
+    query.exec() ;
+    refreshListWidget();
 }
 
 MainWindow::~MainWindow()
