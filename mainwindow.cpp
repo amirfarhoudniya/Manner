@@ -71,9 +71,15 @@ void MainWindow::refreshListWidget()
             _taskItem->AddTask(taskText);
             connect(_taskItem , &taskItem::removeTaskItem , this , &MainWindow::removeTask) ;
 
+            if(record.value("status").toInt() == 1) {
+                _taskItem->checkTheCheckBox();
+            }
+
+            //make listWidget item
             QListWidgetItem *item = new QListWidgetItem() ;
             item->setSizeHint(QSize(0 , 40));
 
+            //add our widget to item
             ui->listWidget->addItem(item);
             ui->listWidget->setItemWidget(item , _taskItem);
         }
@@ -94,9 +100,11 @@ void MainWindow::refreshListWidget()
 void MainWindow::removeTask(QString _taskText)
 {
     QSqlQuery query ;
-    query.prepare("DELETE FROM tasks WHERE task = :taskText") ;
+    query.prepare("DELETE FROM tasks WHERE task = :taskText AND date = :date") ;
     query.bindValue(":taskText" , _taskText);
+    query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
     query.exec() ;
+
     refreshListWidget();
     notifier("saved");
 }

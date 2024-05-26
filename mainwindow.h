@@ -26,7 +26,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void notifier(QString _message) ;
     void fadeOut() ;
-    void addTaskSignalReceived() ;
     void refreshListWidget() ;
     void removeTask(QString _taskText);
 
