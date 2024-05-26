@@ -36,3 +36,11 @@ void addTaskItem::on_add_pushButton_clicked()
 
 }
 
+void addTaskItem::keyPressEvent(QKeyEvent *event)
+{
+    //add item "Enter" key pressed
+    if(event->key() == Qt::Key_Return) {
+        on_add_pushButton_clicked();
+    }
+}
+

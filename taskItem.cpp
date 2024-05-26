@@ -50,3 +50,5 @@ void taskItem::on_checkBox_stateChanged(int arg1)
     query.exec() ;
 }
 
+
+

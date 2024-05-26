@@ -5,6 +5,7 @@
 #include <QSqlQuery>
 #include <QDate>
 
+
 #include "dataBase.h"
 
 namespace Ui {
@@ -19,6 +20,7 @@ public:
     explicit taskItem(QWidget *parent = nullptr );
     void AddTask(QString _taskText) ;
     void checkTheCheckBox();
+
     ~taskItem();
 
 signals:
@@ -27,8 +29,8 @@ signals:
 
 private slots:
     void on_remove_pushButton_clicked();
-
     void on_checkBox_stateChanged(int arg1);
+
 
 private:
     Ui::taskItem *ui;

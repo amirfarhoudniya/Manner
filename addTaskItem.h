@@ -7,6 +7,7 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QLabel>
+#include <QKeyEvent>
 
 #include "dataBase.h"
 
@@ -29,6 +30,7 @@ signals :
 
 private slots:
     void on_add_pushButton_clicked();
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     Ui::addTaskItem *ui;
