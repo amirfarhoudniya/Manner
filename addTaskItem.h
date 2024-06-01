@@ -32,6 +32,8 @@ private slots:
     void on_add_pushButton_clicked();
     void keyPressEvent(QKeyEvent *event);
 
+    void on_lineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::addTaskItem *ui;
 

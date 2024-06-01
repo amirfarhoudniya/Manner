@@ -10,10 +10,15 @@ taskItem::taskItem(QWidget *parent )
     ui->remove_pushButton->setFixedSize(30 , 30);
     ui->remove_pushButton->setCursor(Qt::PointingHandCursor);
     ui->remove_pushButton->setStyleSheet("border-radius:10px ; background-color: red ; color:black");
+    ui->checkBox->setCursor(Qt::PointingHandCursor);
+    ui->checkBox->setStyleSheet("border-radius:5px ;");
 }
 
-void taskItem::AddTask(QString _taskText)
+void taskItem::AddTask(QString _taskText, int _isHabit)
 {
+    if (_isHabit) {
+        ui->checkBox->setIcon(QIcon(":/icons/icons/star.png"));
+    }
     ui->checkBox->setText(_taskText);
     taskText = _taskText ;
 }
@@ -49,6 +54,7 @@ void taskItem::on_checkBox_stateChanged(int arg1)
     query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
     query.exec() ;
 }
+
 
 
 

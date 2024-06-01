@@ -6,10 +6,13 @@
 #include <QLabel>
 #include <QTimer>
 #include <QSqlQuery>
+#include <QKeyEvent>
 
 #include "addTaskItem.h"
 #include "taskItem.h"
 #include "dataBase.h"
+#include "achievments.h"
+#include "Settings.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -24,12 +27,10 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void notifier(QString _message) ;
-    void fadeOut() ;
-    void refreshListWidget() ;
-    void removeTask(QString _taskText);
-
     ~MainWindow();
+
+private slots:
+    void on_setting_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -37,5 +38,12 @@ private:
 
     QLabel *label ;
     QTimer *timer ;
+
+    void notifier(QString _message) ;
+    void fadeOut() ;
+    void refreshListWidget() ;
+    void removeTask(QString _taskText);
+    void changeEvent(QEvent *event);
+    void copyHabitToTaskDB() ;
 };
 #endif // MAINWINDOW_H
