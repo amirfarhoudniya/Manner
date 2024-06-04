@@ -32,6 +32,9 @@ public:
 private slots:
     void on_setting_pushButton_clicked();
 
+
+    void on_achivements_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QDate date ;
@@ -43,7 +46,6 @@ private:
     void fadeOut() ;
     void refreshListWidget() ;
     void removeTask(QString _taskText);
-    void changeEvent(QEvent *event);
     void copyHabitToTaskDB() ;
 };
 #endif // MAINWINDOW_H

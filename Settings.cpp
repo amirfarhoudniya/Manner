@@ -19,13 +19,43 @@ Settings::~Settings()
     delete ui;
 }
 
+void Settings::copyHabitToTaskDB()
+{
+    QSqlQuery query;
+    QSqlQuery query2;
+
+    query.prepare("SELECT * FROM habits WHERE habit NOT IN (SELECT task FROM tasks WHERE date = :date AND isHabit = '1')");
+    query.bindValue(":date", QDate::currentDate().toString("ddMMMMyyyy"));
+
+    if (query.exec()) {
+        while (query.next()) {
+            QString habitText = query.value("habit").toString();
+
+            query2.prepare("INSERT INTO tasks (task, date, status, isHabit) VALUES (?, ?, ?, ?)");
+            query2.addBindValue(habitText);
+            query2.addBindValue(QDate::currentDate().toString("ddMMMMyyyy"));
+            query2.addBindValue(0);
+            query2.addBindValue(1);
+
+            if (!query2.exec()) {
+                qDebug() << "Failed to insert habit into tasks.";
+            }
+        }
+    } else {
+        qDebug() << "Failed to execute query.";
+    }
+
+}
+
 void Settings::on_add_pushButton_clicked()
 {
+    QString txt ;
+
     if(ui->lineEdit->text().isEmpty()) {
         ui->lineEdit->setStyleSheet("color : red");
         ui->lineEdit->setPlaceholderText("can't be empty");
     } else {
-        QString txt = ui->lineEdit->text() ;
+        txt = ui->lineEdit->text() ;
         QSqlQuery query ;
         query.prepare("INSERT INTO habits (habit , date , status) VALUES (? , ? , ?)") ;
         query.addBindValue(txt);
@@ -36,6 +66,7 @@ void Settings::on_add_pushButton_clicked()
         }
     }
 
+    copyHabitToTaskDB() ;
     updateListView() ;
 }
 

@@ -25,7 +25,6 @@ public:
 
 private slots:
     void on_month_comboBox_currentIndexChanged();
-    void changeEvent(QEvent *event) ;
 
 private:
     Ui::achievments *ui;
@@ -35,6 +34,7 @@ private:
 
     void updateToDoWidgets() ;
     void getTaskStatusFromDB(int _year , QString _month , int _day , achievmentItem *_item) ;
+    void updateStatics() ;
 };
 
 #endif // ACHIEVMENTS_H

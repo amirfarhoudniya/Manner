@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1276</width>
-    <height>679</height>
+    <width>1463</width>
+    <height>694</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>10</y>
-     <width>1241</width>
-     <height>651</height>
+     <width>1441</width>
+     <height>681</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -60,7 +60,83 @@
      </layout>
     </item>
     <item>
-     <widget class="QTableWidget" name="tableWidget"/>
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="4,1,0">
+      <item>
+       <widget class="QTableWidget" name="tableWidget"/>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,0,1,1,1">
+        <item>
+         <widget class="QLabel" name="totalHabitTask_label">
+          <property name="text">
+           <string>total habit task :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="habitTaskDoneInMonth_label">
+          <property name="text">
+           <string>Habit tasks done (month) :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="HabitHitRate_label">
+          <property name="text">
+           <string>Hit rate :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="totalRegularTasks_label">
+          <property name="text">
+           <string>total regular tasks :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="regularTaskDoneInMonth_label">
+          <property name="text">
+           <string>regular taks done (month) :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="regularTaskHitRate_label">
+          <property name="text">
+           <string>hit rate :</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

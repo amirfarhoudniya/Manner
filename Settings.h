@@ -35,6 +35,7 @@ private:
     Ui::Settings *ui;
 
     void updateListView() ;
+    void copyHabitToTaskDB() ;
 };
 
 #endif // SETTINGS_H

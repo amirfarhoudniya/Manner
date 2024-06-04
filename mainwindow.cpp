@@ -17,33 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setting_pushButton->setIcon(QIcon(":/icons/icons/settings.png"));
     ui->setting_pushButton->setCursor(Qt::PointingHandCursor);
 
+    ui->achivements_pushButton->setCursor(Qt::PointingHandCursor);
+
     copyHabitToTaskDB() ;
     refreshListWidget();
-}
-
-void MainWindow::copyHabitToTaskDB()
-{
-    QSqlQuery query ;
-    QSqlRecord record ;
-    QString txt ;
-
-    query.prepare("DELETE FROM tasks WHERE date = :date AND isHabit = '1' " );
-    query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
-    query.exec() ;
-
-    query.prepare("SELECT * FROM habits");
-    if(query.exec()) {
-        while(query.next()) {
-            record = query.record() ;
-            txt = record.value("habit").toString() ;
-            query.prepare("INSERT INTO tasks (task , date , status , isHabit) VALUES (? , ? , ? , ?)") ;
-            query.addBindValue(txt);
-            query.addBindValue(QDate::currentDate().toString("ddMMMMyyyy"));
-            query.addBindValue(0);
-            query.addBindValue(1);
-            query.exec() ;
-        }
-    }
 }
 
 void MainWindow::refreshListWidget()
@@ -54,8 +31,8 @@ void MainWindow::refreshListWidget()
     QSqlRecord record ;
 
     //query habits
-    query.prepare("SELECT * FROM tasks WHERE date = :date AND isHabit = '1' ") ;
-    query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
+    query.prepare("SELECT * FROM tasks WHERE date = :currentDate AND isHabit = '1' ") ;
+    query.bindValue(":currentDate" , QDate::currentDate().toString("ddMMMMyyyy"));
 
     if(query.exec()) {
         while(query.next()) {
@@ -118,6 +95,33 @@ void MainWindow::refreshListWidget()
     ui->listWidget->setItemWidget(item , task);
 }
 
+void MainWindow::copyHabitToTaskDB()
+{
+    QSqlQuery query;
+    QSqlQuery query3;
+
+    query.prepare("SELECT * FROM habits WHERE habit NOT IN (SELECT task FROM tasks WHERE date = :date AND isHabit = '1')");
+    query.bindValue(":date", QDate::currentDate().toString("ddMMMMyyyy"));
+
+    if (query.exec()) {
+        while (query.next()) {
+            QString habitText = query.value("habit").toString();
+
+            query3.prepare("INSERT INTO tasks (task, date, status, isHabit) VALUES (?, ?, ?, ?)");
+            query3.addBindValue(habitText);
+            query3.addBindValue(QDate::currentDate().toString("ddMMMMyyyy"));
+            query3.addBindValue(0);
+            query3.addBindValue(1);
+
+            if (!query3.exec()) {
+                qDebug() << "Failed to insert habit into tasks.";
+            }
+        }
+    } else {
+        qDebug() << "Failed to execute query.";
+    }
+}
+
 void MainWindow::removeTask(QString _taskText)
 {
     QSqlQuery query ;
@@ -128,18 +132,6 @@ void MainWindow::removeTask(QString _taskText)
 
     refreshListWidget();
     notifier("saved");
-}
-
-void MainWindow::changeEvent(QEvent *event)
-{
-    // if page maximized show achievments
-    if(event->type() == QEvent::WindowStateChange) {
-        if(windowState() == Qt::WindowMaximized) {
-            achievments *a = new achievments() ;
-            a->show();
-            this->close();
-        }
-    }
 }
 
 void MainWindow::notifier(QString _message)
@@ -188,5 +180,12 @@ void MainWindow::on_setting_pushButton_clicked()
     Settings *s = new Settings() ;
     s->show();
     this->close() ;
+}
+
+
+void MainWindow::on_achivements_pushButton_clicked()
+{
+    achievments *a = new achievments() ;
+    a->show();
 }
 

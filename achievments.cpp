@@ -44,6 +44,7 @@ achievments::achievments(QWidget *parent)
     ui->month_comboBox->setCurrentIndex(currentMonth - 1); // Subtract 1 from currentMonth to match the index
 
     updateToDoWidgets() ;
+    updateStatics() ;
 }
 
 achievments::~achievments()
@@ -103,7 +104,7 @@ void achievments::updateToDoWidgets()
         columnCounter = _dayOfWeek - 1;
         ui->tableWidget->setCellWidget(rowCounter , columnCounter ,item) ;
         ui->tableWidget->setRowHeight(rowCounter , 118);
-        ui->tableWidget->setColumnWidth(columnCounter , 165);
+        ui->tableWidget->setColumnWidth(columnCounter , 160);
         if(columnCounter == 6) {
             rowCounter ++ ;
         }
@@ -137,22 +138,92 @@ void achievments::getTaskStatusFromDB(int _year, QString _month, int _day , achi
     _item->setStar(habitTasksDone,regularTasksDone);
 }
 
+void achievments::updateStatics()
+{
+
+        QSqlQuery query;
+
+        /*************************** Habit Task's statistics *******************************/
+
+        // total habit tasks
+        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1'");
+        query.exec();
+        if (query.next()) {
+            ui->totalHabitTask_label->setText(QString("total Habit tasks: %1").arg(query.value(0).toString()));
+            float totalHabitTasks = query.value(0).toInt();
+
+            // tasks is done
+            query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1' AND status = '1'");
+            query.exec();
+            if (query.next()) {
+                ui->habitTaskDoneInMonth_label->setText(QString("habit tasks done : %1").arg(query.value(0).toString()));
+                float taskIsDone = query.value(0).toInt();
+
+                // hit rate
+                if (taskIsDone != 0) {
+                    float habitHitRate = (taskIsDone / totalHabitTasks) * 100;
+                    ui->HabitHitRate_label->setText(QString("Hit Rate: %1").arg(habitHitRate));
+                } else {
+                    // Handle division by zero error
+                    ui->HabitHitRate_label->setText("Hit Rate: N/A");
+                }
+            } else {
+                // Handle query error
+                ui->habitTaskDoneInMonth_label->setText("habit tasks done: N/A");
+                ui->HabitHitRate_label->setText("Hit Rate: N/A");
+            }
+        } else {
+            // Handle query error
+            ui->totalHabitTask_label->setText("total Habit tasks: N/A");
+            ui->habitTaskDoneInMonth_label->setText("habit tasks done: N/A");
+            ui->HabitHitRate_label->setText("Hit Rate: N/A");
+        }
+
+        /*************************** Regular Task's statistics *******************************/
+
+        // total regular tasks
+        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0'");
+        query.exec();
+        if (query.next()) {
+            ui->totalRegularTasks_label->setText(QString("total regular tasks: %1").arg(query.value(0).toString()));
+            float totalRegularTasks = query.value(0).toInt();
+
+            // tasks is done
+            query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0' AND status = '1'");
+            query.exec();
+            if (query.next()) {
+                ui->regularTaskDoneInMonth_label->setText(QString("regular tasks done: %1").arg(query.value(0).toString()));
+                float taskIsDone = query.value(0).toInt();
+
+                // hit rate
+                if (taskIsDone != 0) {
+                    float regularHitRate = (taskIsDone / totalRegularTasks ) * 100;
+                    ui->regularTaskHitRate_label->setText(QString("Hit Rate: %1").arg(regularHitRate));
+                } else {
+                    // Handle division by zero error
+                    ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
+                }
+            } else {
+                // Handle query error
+                ui->regularTaskDoneInMonth_label->setText("regular tasks done: N/A");
+                ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
+            }
+        } else {
+            // Handle query error
+            ui->totalRegularTasks_label->setText("total regular tasks: N/A");
+            ui->regularTaskDoneInMonth_label->setText("regular tasks done: N/A");
+            ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
+        }
+}
+
 void achievments::on_month_comboBox_currentIndexChanged()
 {
     updateToDoWidgets();
 }
 
-void achievments::changeEvent(QEvent *event)
-{
-    // if page maximized show achievments
-    if(event->type() == QEvent::WindowStateChange) {
-        if(windowState() == Qt::WindowMaximized) {
-            MainWindow *m = new MainWindow() ;
-            m->show();
-            this->close();
-        }
-    }
-}
+
+
+
 
 
 

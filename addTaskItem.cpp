@@ -20,6 +20,9 @@ addTaskItem::~addTaskItem()
 
 void addTaskItem::on_add_pushButton_clicked()
 {
+
+
+    //checking the lineEdit to not be empty
     if(ui->lineEdit->text().isEmpty()) {
         ui->lineEdit->setStyleSheet("color:red");
         ui->lineEdit->setPlaceholderText(" can't be empty");
@@ -35,6 +38,7 @@ void addTaskItem::on_add_pushButton_clicked()
         query.addBindValue(status);
         query.addBindValue(0);
         query.exec();
+
         taskText = task ;
         emit taskAdded();
         emit callPopUpNotifier("saved");
