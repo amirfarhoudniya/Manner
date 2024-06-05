@@ -86,7 +86,7 @@ void achievments::updateToDoWidgets()
         }
     }
 
-    for (int i = 1 ; i <= monthDays ; i++) {
+    for (int i = 0 ; i <= monthDays ; i++) {
 
         if(i  > monthDays ) {
             break ;
@@ -100,7 +100,7 @@ void achievments::updateToDoWidgets()
         item->setDayOfMonth(i);
         getTaskStatusFromDB(ui->year_comboBox->currentText().toInt() ,
                             ui->month_comboBox->currentText() ,
-                            i , item);
+                             i , item) ;
         columnCounter = _dayOfWeek - 1;
         ui->tableWidget->setCellWidget(rowCounter , columnCounter ,item) ;
         ui->tableWidget->setRowHeight(rowCounter , 118);
@@ -112,27 +112,46 @@ void achievments::updateToDoWidgets()
 
 }
 
-void achievments::getTaskStatusFromDB(int _year, QString _month, int _day , achievmentItem *_item)
+void achievments::getTaskStatusFromDB(int _year , QString _month , int _day , achievmentItem *_item)
 {
-    QString _date = QString::number(_day) + _month + QString::number(_year) ;
+    QString _date ;
+    if(_day < 10) {
+        _date ="0" + QString::number(_day) + _month + QString::number(_year) ;
+    }else {
+        _date = QString::number(_day) + _month + QString::number(_year) ;
+    }
+
+
     int habitTasksDone = 0 ;
     int regularTasksDone = 0 ;
     QSqlQuery query ;
 
+    qDebug() << _date ;
+
     //habit tasks
-    query.prepare("SELECT COUNT(*) FROM habits WHERE date = :date AND status = '1' ") ;
+    query.prepare("SELECT COUNT(*) FROM tasks WHERE date =:date AND status = '1' AND isHabit = '1' ") ;
     query.bindValue(":date" , _date);
 
-    if(query.exec() && query.next()) {
-        habitTasksDone = query.value(0).toInt() ;
+    if (query.exec()) {
+        if(query.next()) {
+            habitTasksDone = query.value(0).toInt() ;
+            qDebug() << "habit :" << habitTasksDone ;
+        }
+    } else {
+        qDebug() << query.lastError() ;
     }
 
     //regular tasks
-    query.prepare("SELECT COUNT(*) FROM tasks WHERE date = :date AND status = '1' ") ;
+    query.prepare("SELECT COUNT(*) FROM tasks WHERE date =:date AND status = '1' AND isHabit = '0' ") ;
     query.bindValue(":date" , _date);
 
-    if(query.exec() && query.next()) {
-        regularTasksDone = query.value(0).toInt() ;
+    if(query.exec()) {
+        if(query.next()) {
+            regularTasksDone = query.value(0).toInt() ;
+            qDebug() << "regular task :" << regularTasksDone ;
+        }
+    } else {
+        qDebug() << query.lastError() ;
     }
 
     _item->setStar(habitTasksDone,regularTasksDone);
@@ -141,79 +160,79 @@ void achievments::getTaskStatusFromDB(int _year, QString _month, int _day , achi
 void achievments::updateStatics()
 {
 
-        QSqlQuery query;
+    QSqlQuery query;
 
-        /*************************** Habit Task's statistics *******************************/
+    /*************************** Habit Task's statistics *******************************/
 
-        // total habit tasks
-        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1'");
+    // total habit tasks
+    query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1'");
+    query.exec();
+    if (query.next()) {
+        ui->totalHabitTask_label->setText(QString("total Habit tasks: %1").arg(query.value(0).toString()));
+        float totalHabitTasks = query.value(0).toInt();
+
+        // tasks is done
+        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1' AND status = '1'");
         query.exec();
         if (query.next()) {
-            ui->totalHabitTask_label->setText(QString("total Habit tasks: %1").arg(query.value(0).toString()));
-            float totalHabitTasks = query.value(0).toInt();
+            ui->habitTaskDoneInMonth_label->setText(QString("habit tasks done : %1").arg(query.value(0).toString()));
+            float taskIsDone = query.value(0).toInt();
 
-            // tasks is done
-            query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '1' AND status = '1'");
-            query.exec();
-            if (query.next()) {
-                ui->habitTaskDoneInMonth_label->setText(QString("habit tasks done : %1").arg(query.value(0).toString()));
-                float taskIsDone = query.value(0).toInt();
-
-                // hit rate
-                if (taskIsDone != 0) {
-                    float habitHitRate = (taskIsDone / totalHabitTasks) * 100;
-                    ui->HabitHitRate_label->setText(QString("Hit Rate: %1").arg(habitHitRate));
-                } else {
-                    // Handle division by zero error
-                    ui->HabitHitRate_label->setText("Hit Rate: N/A");
-                }
+            // hit rate
+            if (taskIsDone != 0) {
+                float habitHitRate = (taskIsDone / totalHabitTasks) * 100;
+                ui->HabitHitRate_label->setText(QString("Hit Rate: %1").arg(habitHitRate));
             } else {
-                // Handle query error
-                ui->habitTaskDoneInMonth_label->setText("habit tasks done: N/A");
+                // Handle division by zero error
                 ui->HabitHitRate_label->setText("Hit Rate: N/A");
             }
         } else {
             // Handle query error
-            ui->totalHabitTask_label->setText("total Habit tasks: N/A");
             ui->habitTaskDoneInMonth_label->setText("habit tasks done: N/A");
             ui->HabitHitRate_label->setText("Hit Rate: N/A");
         }
+    } else {
+        // Handle query error
+        ui->totalHabitTask_label->setText("total Habit tasks: N/A");
+        ui->habitTaskDoneInMonth_label->setText("habit tasks done: N/A");
+        ui->HabitHitRate_label->setText("Hit Rate: N/A");
+    }
 
-        /*************************** Regular Task's statistics *******************************/
+    /*************************** Regular Task's statistics *******************************/
 
-        // total regular tasks
-        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0'");
+    // total regular tasks
+    query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0'");
+    query.exec();
+    if (query.next()) {
+        ui->totalRegularTasks_label->setText(QString("total regular tasks: %1").arg(query.value(0).toString()));
+        float totalRegularTasks = query.value(0).toInt();
+
+        // tasks is done
+        query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0' AND status = '1'");
         query.exec();
         if (query.next()) {
-            ui->totalRegularTasks_label->setText(QString("total regular tasks: %1").arg(query.value(0).toString()));
-            float totalRegularTasks = query.value(0).toInt();
+            ui->regularTaskDoneInMonth_label->setText(QString("regular tasks done: %1").arg(query.value(0).toString()));
+            float taskIsDone = query.value(0).toInt();
 
-            // tasks is done
-            query.prepare("SELECT COUNT(*) FROM tasks WHERE isHabit = '0' AND status = '1'");
-            query.exec();
-            if (query.next()) {
-                ui->regularTaskDoneInMonth_label->setText(QString("regular tasks done: %1").arg(query.value(0).toString()));
-                float taskIsDone = query.value(0).toInt();
-
-                // hit rate
-                if (taskIsDone != 0) {
-                    float regularHitRate = (taskIsDone / totalRegularTasks ) * 100;
-                    ui->regularTaskHitRate_label->setText(QString("Hit Rate: %1").arg(regularHitRate));
-                } else {
-                    // Handle division by zero error
-                    ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
-                }
+            // hit rate
+            if (taskIsDone != 0) {
+                float regularHitRate = (taskIsDone / totalRegularTasks ) * 100;
+                ui->regularTaskHitRate_label->setText(QString("Hit Rate: %1").arg(regularHitRate));
             } else {
-                // Handle query error
-                ui->regularTaskDoneInMonth_label->setText("regular tasks done: N/A");
+                // Handle division by zero error
                 ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
             }
         } else {
             // Handle query error
-            ui->totalRegularTasks_label->setText("total regular tasks: N/A");
             ui->regularTaskDoneInMonth_label->setText("regular tasks done: N/A");
             ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
         }
+    } else {
+        // Handle query error
+        ui->totalRegularTasks_label->setText("total regular tasks: N/A");
+        ui->regularTaskDoneInMonth_label->setText("regular tasks done: N/A");
+        ui->regularTaskHitRate_label->setText("Hit Rate: N/A");
+    }
 }
 
 void achievments::on_month_comboBox_currentIndexChanged()

@@ -79,6 +79,8 @@ void achievmentItem::setStar(int _habit, int _regularTask)
 
     ui->regularTaskPixmap_label->setPixmap(regularPixmap);
     ui->regularTask_label->setText(QString::number(_regularTask));
+
+    qDebug() << "(ok): " << QString::number(_habit) << " , " << QString::number(_regularTask) ;
 }
 
 
