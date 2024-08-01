@@ -44,15 +44,21 @@ void taskItem::on_checkBox_stateChanged(int arg1)
     //change the background color of item
     if(arg1) {
         this->setStyleSheet("background-color:#123524");
+        QSqlQuery query ;
+        query.prepare("UPDATE tasks SET status ='1' WHERE task = :taskText AND date = :date") ;
+        query.bindValue(":taskText" , taskText);
+        query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
+        query.exec() ;
     } else {
         this->setStyleSheet("");
+        QSqlQuery query ;
+        query.prepare("UPDATE tasks SET status ='0' WHERE task = :taskText AND date = :date") ;
+        query.bindValue(":taskText" , taskText);
+        query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
+        query.exec() ;
     }
 
-    QSqlQuery query ;
-    query.prepare("UPDATE tasks SET status ='1' WHERE task = :taskText AND date = :date") ;
-    query.bindValue(":taskText" , taskText);
-    query.bindValue(":date" , QDate::currentDate().toString("ddMMMMyyyy"));
-    query.exec() ;
+
 }
 
 
