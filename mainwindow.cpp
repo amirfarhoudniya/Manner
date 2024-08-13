@@ -14,10 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->dayInWeek_label->setText(QDate::currentDate().toString("dddd"));// in text
     ui->date_label->setText(QDate::currentDate().toString("dd  MMM  yyyy"));//in number and text
 
+
+    //pushButton's style
     ui->setting_pushButton->setIcon(QIcon(":/icons/icons/settings.png"));
     ui->setting_pushButton->setCursor(Qt::PointingHandCursor);
 
     ui->achivements_pushButton->setCursor(Qt::PointingHandCursor);
+
+    ui->lineChart_pushButton->setIcon(QIcon(":/icons/icons/chart.png"));
     ui->lineChart_pushButton->setCursor(Qt::PointingHandCursor);
 
     //set fixed size of main page .. disable growing
