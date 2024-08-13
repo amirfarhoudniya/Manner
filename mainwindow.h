@@ -13,6 +13,7 @@
 #include "dataBase.h"
 #include "achievments.h"
 #include "Settings.h"
+#include "LineChart.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -32,8 +33,10 @@ public:
 private slots:
     void on_setting_pushButton_clicked();
 
-
     void on_achivements_pushButton_clicked();
+
+
+    void on_lineChart_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setting_pushButton->setCursor(Qt::PointingHandCursor);
 
     ui->achivements_pushButton->setCursor(Qt::PointingHandCursor);
+    ui->lineChart_pushButton->setCursor(Qt::PointingHandCursor);
+
+    //set fixed size of main page .. disable growing
+    this->setFixedSize(514 , 442);
 
     copyHabitToTaskDB() ;
     refreshListWidget();
@@ -187,5 +191,13 @@ void MainWindow::on_achivements_pushButton_clicked()
 {
     achievments *a = new achievments() ;
     a->show();
+}
+
+
+
+void MainWindow::on_lineChart_pushButton_clicked()
+{
+    LineChart *chart = new LineChart() ;
+    chart->show();
 }
 

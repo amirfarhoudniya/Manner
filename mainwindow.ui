@@ -84,6 +84,19 @@
      <string>achivements</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="lineChart_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>113</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Line Chart</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

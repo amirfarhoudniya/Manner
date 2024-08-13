@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    LineChart.cpp \
     Settings.cpp \
     achievmentItem.cpp \
     achievments.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     taskItem.cpp
 
 HEADERS += \
+    LineChart.h \
     Settings.h \
     achievmentItem.h \
     achievments.h \
@@ -27,6 +29,7 @@ HEADERS += \
     taskItem.h
 
 FORMS += \
+    LineChart.ui \
     Settings.ui \
     achievmentItem.ui \
     achievments.ui \
